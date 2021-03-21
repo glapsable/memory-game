@@ -21,6 +21,7 @@ const useStyles = makeStyles({
     perspective: 600,
     border: "none",
     backgroundColor: "unset",
+    textAlign: "center",
     "&:focus": {
       border: "none",
       outline: "none",

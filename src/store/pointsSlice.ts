@@ -7,11 +7,21 @@ export const pointsSlice = createSlice({
   },
   reducers: {
     incrementPoints: (state) => {
-      state.value += 1;
+      state.value += 10;
+    },
+    decrementPoints: (state) => {
+      state.value -= 5;
+    },
+    resetPoints: (state) => {
+      state.value = 0;
     },
   },
 });
 
-export const { incrementPoints } = pointsSlice.actions;
+export const {
+  incrementPoints,
+  decrementPoints,
+  resetPoints,
+} = pointsSlice.actions;
 
 export default pointsSlice.reducer;

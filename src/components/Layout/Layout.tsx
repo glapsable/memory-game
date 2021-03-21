@@ -1,13 +1,8 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import {
-  AppBar,
-  Container,
-  IconButton,
-  Toolbar,
-  Typography,
-} from "@material-ui/core";
-import MenuIcon from "@material-ui/icons/Menu";
+import { AppBar, Container, Toolbar, Typography } from "@material-ui/core";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store/store";
 
 const useStyles = makeStyles({
   layoutWrapper: {
@@ -18,20 +13,24 @@ const useStyles = makeStyles({
   mainWrapper: {
     flexGrow: 1,
   },
+  toolbar: {
+    justifyContent: "space-between",
+  },
 });
 
 export const Layout: React.FC = ({ children }) => {
   const classes = useStyles();
+  const name = useSelector((state: RootState) => state.userName.value);
+  const points = useSelector((state: RootState) => state.points.value);
 
   return (
     <Container>
       <div className={classes.layoutWrapper}>
         <AppBar position="static">
-          <Toolbar>
-            <IconButton edge="start" color="inherit" aria-label="menu">
-              <MenuIcon />
-            </IconButton>
+          <Toolbar className={classes.toolbar}>
             <Typography variant="h6">Memory game</Typography>
+            <Typography variant="h6">Player: {name}</Typography>
+            <Typography variant="h6">{points} points</Typography>
           </Toolbar>
         </AppBar>
         <main className={classes.mainWrapper}>{children}</main>

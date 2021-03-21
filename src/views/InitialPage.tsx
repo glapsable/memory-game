@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { KeyboardEventHandler, useState } from "react";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import { Button, TextField } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
@@ -35,6 +35,12 @@ export const InitialPage: React.FC = () => {
     history.push(Routes.GAME_PAGE);
   };
 
+  const onKeyPress = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === "Enter" && name.length) {
+      clickStartButtonHandler();
+    }
+  };
+
   return (
     <div className={classes.initialPageWrapper}>
       <div className={classes.userInputsWrapper}>
@@ -43,6 +49,7 @@ export const InitialPage: React.FC = () => {
           value={name}
           onChange={(event) => setName(event.target.value)}
           label="User name"
+          onKeyDown={(event) => onKeyPress(event)}
         />
         <Button
           variant="contained"
