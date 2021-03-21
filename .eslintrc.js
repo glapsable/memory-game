@@ -1,40 +1,41 @@
 module.exports = {
   extends: [
-    'airbnb-typescript',
-    'airbnb/hooks',
-    'plugin:@typescript-eslint/recommended',
-    'plugin:jest/recommended',
-    'prettier',
-    'plugin:prettier/recommended'
+    "airbnb-typescript",
+    "airbnb/hooks",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:jest/recommended",
+    "prettier",
+    "plugin:prettier/recommended",
   ],
-  plugins: ['react', '@typescript-eslint', 'jest'],
+  plugins: ["react", "@typescript-eslint", "jest"],
   env: {
     browser: true,
     es6: true,
     jest: true,
   },
   globals: {
-    Atomics: 'readonly',
-    SharedArrayBuffer: 'readonly',
+    Atomics: "readonly",
+    SharedArrayBuffer: "readonly",
   },
-  parser: '@typescript-eslint/parser',
+  parser: "@typescript-eslint/parser",
   parserOptions: {
     ecmaFeatures: {
       jsx: true,
     },
     ecmaVersion: 2018,
-    sourceType: 'module',
-    project: './tsconfig.json',
+    sourceType: "module",
+    project: "./tsconfig.json",
   },
   rules: {
-    'linebreak-style': 'off',
-    'prettier/prettier': [
-      'error',
+    "linebreak-style": "off",
+    "prettier/prettier": [
+      "error",
       {
-        endOfLine: 'auto',
+        endOfLine: "auto",
       },
     ],
     "react/prop-types": 0,
-    "import/no-named-as-default": 0
+    "import/no-named-as-default": 0,
+    "no-param-reassign": [2, { props: false }],
   },
 };
