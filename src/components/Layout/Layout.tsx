@@ -16,6 +16,9 @@ const useStyles = makeStyles({
   toolbar: {
     justifyContent: "space-between",
   },
+  appBar: {
+    marginBottom: 10,
+  },
 });
 
 export const Layout: React.FC = ({ children }) => {
@@ -26,7 +29,7 @@ export const Layout: React.FC = ({ children }) => {
   return (
     <Container>
       <div className={classes.layoutWrapper}>
-        <AppBar position="static">
+        <AppBar className={classes.appBar} position="static">
           <Toolbar className={classes.toolbar}>
             <Typography variant="h6">Memory game</Typography>
             <Typography variant="h6">Player: {name}</Typography>

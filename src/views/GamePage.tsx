@@ -13,7 +13,9 @@ import { RootState } from "../store/store";
 import { addPlayer } from "../store/rankingSlice";
 
 const useStyles = makeStyles({
-  gamePageWrapper: {},
+  gridItem: {
+    textAlign: "center",
+  },
 });
 
 const TOTAL_CARDS_COUNT = 12;
@@ -149,17 +151,22 @@ export const GamePage: React.FC = () => {
   }, [cards, dispatch, history, name, points]);
 
   return (
-    <div className={classes.gamePageWrapper}>
-      <Grid container>
-        {cards.map((card) => {
-          return (
-            <Grid item xs={12} sm={6} md={3} key={card.id}>
-              <CardView card={card} onClick={() => cardClickHandler(card)} />
-            </Grid>
-          );
-        })}
-      </Grid>
-    </div>
+    <Grid container>
+      {cards.map((card) => {
+        return (
+          <Grid
+            className={classes.gridItem}
+            item
+            xs={12}
+            sm={6}
+            md={3}
+            key={card.id}
+          >
+            <CardView card={card} onClick={() => cardClickHandler(card)} />
+          </Grid>
+        );
+      })}
+    </Grid>
   );
 };
 
