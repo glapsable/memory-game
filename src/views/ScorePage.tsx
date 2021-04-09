@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useSelector, useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
@@ -16,6 +16,7 @@ import Routes from "../routes/routes";
 import { RootState } from "../store/store";
 import { resetName } from "../store/nameSlice";
 import { resetPoints } from "../store/pointsSlice";
+import useCheckIfName from "../hooks/useNameCheck";
 
 const useStyles = makeStyles({
   rankingWrapper: {
@@ -32,15 +33,10 @@ const useStyles = makeStyles({
 export const ScorePage: React.FC = () => {
   const classes = useStyles();
   const history = useHistory();
-  const name = useSelector((state: RootState) => state.userName.value);
   const ranking = useSelector((state: RootState) => state.ranking);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    if (!name) {
-      history.push(Routes.INITIAL_PAGE);
-    }
-  }, [history, name]);
+  useCheckIfName();
 
   const startNewGameHandler = () => {
     dispatch(resetName());

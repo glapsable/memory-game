@@ -1,16 +1,21 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Grid } from "@material-ui/core";
-import { v4 as uuidv4 } from "uuid";
-import deepcopy from "deepcopy";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import CardView, { ICard } from "../components/CardView/CardView";
-import cardImages from "../cards";
 import Routes from "../routes/routes";
 import { incrementPoints, decrementPoints } from "../store/pointsSlice";
 import { RootState } from "../store/store";
 import { addPlayer } from "../store/rankingSlice";
+import useCheckIfName from "../hooks/useNameCheck";
+import {
+  setCardIsFlipped,
+  setCardCanFlip,
+  setFirstCard,
+  setSecondCard,
+  resetFirstAndSecondCard,
+} from "../store/cardsSlice";
 
 const useStyles = makeStyles({
   gridItem: {
@@ -18,92 +23,34 @@ const useStyles = makeStyles({
   },
 });
 
-const TOTAL_CARDS_COUNT = 12;
-
-const shuffleArray = (array: any[]) => {
-  return array.sort(() => 0.5 - Math.random());
-};
-
-const generateCards: (count: number) => ICard[] = (count) => {
-  if (count % 2 !== 0) {
-    throw Error("Only even numbers!");
-  }
-  const cards = shuffleArray(cardImages)
-    .slice(0, count / 2)
-    .map((imageUrl: string) => ({
-      id: uuidv4(),
-      imageUrl: `images/cards/${imageUrl}`,
-      isFlipped: true,
-      canFlip: true,
-    }))
-    .flatMap((e) => [e, { ...deepcopy(e), id: uuidv4() }]);
-
-  return shuffleArray(cards);
-};
-
 export const GamePage: React.FC = () => {
   const classes = useStyles();
   const history = useHistory();
   const dispatch = useDispatch();
   const name = useSelector((state: RootState) => state.userName.value);
   const points = useSelector((state: RootState) => state.points.value);
-  const [cards, setCards] = useState<ICard[]>(generateCards(TOTAL_CARDS_COUNT));
-  const [firstCard, setFirstCard] = useState<ICard | null>(null);
-  const [secondCard, setSecondCard] = useState<ICard | null>(null);
+  const cards = useSelector((state: RootState) => state.cards.allCards);
+  const firstCard = useSelector((state: RootState) => state.cards.firstCard);
+  const secondCard = useSelector((state: RootState) => state.cards.secondCard);
 
-  useEffect(() => {
-    if (!name) {
-      history.push(Routes.INITIAL_PAGE);
-    }
-  }, [history, name]);
-
-  const setCardIsFlipped = (cardId: string, isFlipped: boolean) => {
-    setCards((prevState) =>
-      prevState.map((card) => {
-        if (card.id === cardId) {
-          return { ...card, isFlipped };
-        }
-        return card;
-      })
-    );
-  };
-
-  const setCardCanFlip = (cardId: string, canFlip: boolean) => {
-    setCards((prevState) =>
-      prevState.map((card) => {
-        if (card.id === cardId) {
-          return { ...card, canFlip };
-        }
-        return card;
-      })
-    );
-  };
-
-  const resetFirstAndSecondCards = () => {
-    setFirstCard(null);
-    setSecondCard(null);
-  };
+  useCheckIfName();
 
   const onSuccessGuess = useCallback(() => {
     if (firstCard !== null && secondCard !== null) {
-      setCardCanFlip(firstCard.id, false);
-      setCardCanFlip(secondCard.id, false);
-      setCardIsFlipped(firstCard.id, false);
-      setCardIsFlipped(secondCard.id, false);
-      resetFirstAndSecondCards();
+      dispatch(setCardCanFlip({ cardId: firstCard.id, canFlip: false }));
+      dispatch(setCardCanFlip({ cardId: secondCard.id, canFlip: false }));
+      dispatch(resetFirstAndSecondCard());
       dispatch(incrementPoints());
     }
   }, [dispatch, firstCard, secondCard]);
 
   const onFailureGuess = useCallback(() => {
     if (firstCard !== null && secondCard !== null) {
-      const firstCardId = firstCard.id;
-      const secondCardId = secondCard.id;
       setTimeout(() => {
-        setCardIsFlipped(firstCardId, true);
-        setCardIsFlipped(secondCardId, true);
+        dispatch(setCardIsFlipped({ cardId: firstCard.id, isFlipped: true }));
+        dispatch(setCardIsFlipped({ cardId: secondCard.id, isFlipped: true }));
       }, 1000);
-      resetFirstAndSecondCards();
+      dispatch(resetFirstAndSecondCard());
       dispatch(decrementPoints());
     }
   }, [dispatch, firstCard, secondCard]);
@@ -130,12 +77,12 @@ export const GamePage: React.FC = () => {
       return;
     }
 
-    setCardIsFlipped(card.id, false);
+    dispatch(setCardIsFlipped({ cardId: card.id, isFlipped: false }));
 
     if (firstCard) {
-      setSecondCard(card);
+      dispatch(setSecondCard(card));
     } else {
-      setFirstCard(card);
+      dispatch(setFirstCard(card));
     }
   };
 

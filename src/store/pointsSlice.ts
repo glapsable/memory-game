@@ -7,7 +7,7 @@ export const pointsSlice = createSlice({
   },
   reducers: {
     incrementPoints: (state) => {
-      state.value += 10;
+      state.value += 20;
     },
     decrementPoints: (state) => {
       state.value -= 5;
